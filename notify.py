@@ -1,7 +1,9 @@
+from datetime import datetime
 import discord
 import dotenv
 import os
 from playsound import playsound
+import re
 
 dotenv.load_dotenv()
 
@@ -13,13 +15,16 @@ bot = discord.Bot(intents = intents)
 @bot.event
 async def on_message(message):
     playsound("alert.mp3", False)
-    print(message.author.name)
-    print(message.content)
+    output = message.author.name + "\n" + message.content
+    ts = re.findall("<t:[0-9]+.?>", message.content)
+    for line in ts:
+        output += "\n" + line
+        re.sub("[^0-9]", "", line)
+        output += "\n" + datetime.utcfromtimestamp(int(line)).strftime("%Y-%m-%d %H:%M:%S")
+    print(output)
     print("\n")
     with open("log.txt", "a") as log:
-        log.write(message.author.name)
-        log.write("\n")
-        log.write(message.content)
+        log.write(output)
         log.write("\n\n")
 
 @bot.event
