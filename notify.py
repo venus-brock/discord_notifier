@@ -16,16 +16,16 @@ bot = discord.Bot(intents = intents)
 async def on_message(message):
     playsound("alert.mp3", False)
     output = message.author.name + "\n" + message.content
-    ts = re.findall("<t:[0-9]+.?>", message.content)
+    ts = re.findall("<t:[0-9]+:.?>", message.content)
     for line in ts:
         output += "\n" + line
-        re.sub("[^0-9]", "", line)
-        output += "\n" + datetime.utcfromtimestamp(int(line)).strftime("%Y-%m-%d %H:%M:%S")
+        num = re.sub("[^0-9]", "", line)
+        output += " = " + datetime.utcfromtimestamp(int(num)).strftime("%Y-%m-%d %H:%M:%S")
+    output += "\n"
     print(output)
-    print("\n")
     with open("log.txt", "a") as log:
         log.write(output)
-        log.write("\n\n")
+        log.write("\n")
 
 @bot.event
 async def on_ready():
